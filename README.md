@@ -1,2 +1,2 @@
 # GeoLab-PHP-Lessons
-GeoLab PHP - Lesson 1
+GeoLab PHP - Lesson 3
