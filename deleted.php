@@ -44,52 +44,57 @@ $data = $db->fetchAll("SELECT id, title, description, imageName, deleted, date F
 if (!empty($data)) {
     ?>
     <div class="container py-5">
-        <h5>წაშლილი პოსტები / რაოდენობა: <?=count($data)?></h4>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>img</th>
-                        <th>სათაური</th>
-                        <th>აღწერა</th>
-                        <th>წაშლის თარიღი</th>
-                        <th>თარიღი</th>
-                        <th>მოქმედება</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    foreach ($data as $row) {
-                        $image = ($row['imageName']) ? 'uploads/'.$row['imageName'].'.jpg' : 'img/noimage.jpg'; ?>
-                        <tr>
-                            <td><?=$row['id']?></td>
-                            <td><img src="<?=$image?>" class="img-fluid" style="width:40px;"></td>
-                            <td><?=$row['title']?></td>
-                            <td><?=$func->getShortText($row['description'])?></td>
-                            <td><?=$row['deleted']?></td>
-                            <td><?=$row['date']?></td>
-                            <td>
-                                <form method="post">
-                                    <input type="hidden" name="id" value="<?=$row['id']?>">
-                                    <input type="hidden" name="token" value="<?=$token?>">
-                                    <div class="btn-group">
-                                        <input type="submit" name="restore" value="აღდგენა" class="btn btn-sm btn-warning">
-                                        <input type="submit" name="delete" value="წაშლა" class="btn btn-sm btn-danger">
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">წაშლილი პოსტები / რაოდენობა: <?=count($data)?></h5>
+            </div>
+            <div class="card-body table-responsive p-0">
+                <table class="table table-hover">
+                    <tbody>
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>img</th>
+                                <th>სათაური</th>
+                                <th>აღწერა</th>
+                                <th>წაშლის თარიღი</th>
+                                <th>თარიღი</th>
+                                <th>მოქმედება</th>
+                            </tr>
+                        </thead>
                         <?php
-                    } ?>
-                </tbody>
-            </table>
+                        foreach ($data as $row) {
+                            $image = ($row['imageName']) ? 'uploads/'.$row['imageName'].'.jpg' : 'img/noimage.jpg'; ?>
+                            <tr>
+                                <td><?=$row['id']?></td>
+                                <td><img src="<?=$image?>" class="img-fluid" style="width:40px;"></td>
+                                <td><?=$row['title']?></td>
+                                <td><?=$func->getShortText($row['description'])?></td>
+                                <td><?=$row['deleted']?></td>
+                                <td><?=$row['date']?></td>
+                                <td>
+                                    <form method="post">
+                                        <input type="hidden" name="id" value="<?=$row['id']?>">
+                                        <input type="hidden" name="token" value="<?=$token?>">
+                                        <div class="btn-group">
+                                            <input type="submit" name="restore" value="აღდგენა" class="btn btn-sm btn-warning">
+                                            <input type="submit" name="delete" value="წაშლა" class="btn btn-sm btn-danger">
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            <?php
+                        } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <?php
 } else {
-                        echo '<div class="container py-5">
+    echo '<div class="container py-5">
     <center><p>წაშლილი პოსტები არ არის.<p>
     </center>
     </div>';
-                    }
+}
 require('footer.php');
