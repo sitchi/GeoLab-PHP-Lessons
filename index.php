@@ -1,42 +1,62 @@
 <?php
 
-$title = 'PHP - Lesson 1';
+$title = 'PHP - Lesson 3';
+require('head.php'); // load header
 
-require('head.php');
-require('functions.php');
+if (isset($_POST['delete'])) {
+    $id = $func->int($_POST['id']);
 
-$func = new functions();
+    // delete post
+    $sql = "UPDATE `posts` SET `deleted`=:deleted WHERE id = :id";
+    $data = [
+        'deleted' => date('Y-m-d H:i:s'),
+        'id' => $id
+    ];
+    $db->update($sql, $data);
 
-$file = 'storage/data.txt';
-
-// ვამოწმებთ გვაქ თუ არა ფაილზე ჩაწერის უფლება
-$func->checkWritable($file);
-
-// ფაილში შემთხვევითი ციფრების ჩაწერა
-$func->writeRandomNumber($file, 100);
-
-echo '<p><b>1. წაიკითხეთ ფაილიდან თითო ხაზი და ჩაწერეთ მასივში, შემდეგ ამოღებული მნიშვნელობები გამოიტანეთ ეკრანზე (echo)-ს დახმარებით.</b></p>';
-
-// ფაილიდან გამოგვაქ ჩანაწერები
-$fileData = $func->readFileArray($file);
-
-foreach ($fileData as $key => $value) {
-    echo $value;
+    // redirect home page
+    $func->redirect();
 }
 
-echo '<hr>';
-echo '<p><b>2. დაითვალეთ მასივში არსებული ლუწი რიცხვების ჯამი. (მასივი შეავსეთ თქვენ თვითონ შემთხვევითი რიცხვებით). </b></p>';
+$data = $db->fetchAll("SELECT id, title, description, imageName, date FROM posts WHERE deleted IS NULL ORDER BY id DESC");
 
-// გამოგვაქ ლუწი რიცხვები
-$evenNumbers = $func->getEvenNumber($fileData);
-foreach ($evenNumbers as $key => $value) {
-    echo $value;
-}
-
-echo '<p>ლუწი რიცხვების ჯამი: '.count($evenNumbers).'</p>';
-
-echo '<hr>';
-echo '<p><b>3. გააკეთეთ ფორმა, რომელსაც ექნება 4 ველი: სახელი, გვარი, ასაკი, სქესი(0 - მამრობითი,1 - მდედრობითი)… პირობა: დასაბმითების შემდეგ, შეინახეთ შეყვანილი მნიშვნელობები txt ფაილში, (ფაილს დაარქვით ის სახელი რასაც მომხმარებელი შეიყვანს, გამოიყენეთ w mode ჩაწერის.). </b></p>';
-echo '<a href="registration.php">რეგისტრაცია</a></br>';
-
+if (!empty($data)) {
+    ?>
+    <div class="container py-5">
+        <div class="row">
+            <?php
+            foreach ($data as $row) {
+                $image = ($row['imageName']) ? 'uploads/'.$row['imageName'].'.jpg' : 'img/noimage.jpg'; ?>
+                <div class="col-md-4">
+                    <div class="card mb-4 shadow-sm">
+                        <div class="col-12 image" style="background-image: url(<?=$image?>);">
+                            <div class="title"><?=$row['title']?></div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text"><?=$row['description']?></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <form method="post">
+                                    <input type="hidden" name="id" value="<?=$row['id']?>">
+                                    <div class="btn-group">
+                                        <a class="btn btn-sm btn-info" href="/edit.php?id=<?=$row['id']?>">რედ.</a>
+                                        <input type="submit" name="delete" value="წაშ." class="btn btn-sm btn-warning">
+                                    </div>
+                                </form>
+                                <small class="text-muted"><?=$row['date']?></small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            } ?>
+        </div>
+    </div>
+    <?php
+} else {
+                echo '<div class="container py-5">
+    <center><p>პოსტები არ არის.<p>
+    <a class="text-success" href="/newPost.php">დაამატე პირველი პოსტი</a>
+    </center>
+    </div>';
+            }
 require('footer.php');
