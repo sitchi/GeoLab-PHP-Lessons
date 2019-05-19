@@ -1,0 +1,16 @@
+
+.title {
+    position: absolute;
+    top: 75%;
+    left: 0;
+    color: white;
+    padding: 0 5px 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.image {
+    padding-bottom: 200px;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
