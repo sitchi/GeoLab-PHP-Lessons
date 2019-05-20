@@ -12,6 +12,11 @@ if (isset($_POST['newPost'])) {
     $imageName = $_FILES['image']['name'];
     $imageTmp = $_FILES['image']['tmp_name'];
 
+    if ($imageName!= NULL && $func->getFileExtension($imageName)!='jpg') {
+        // redirect home page
+        $func->redirect();
+    }
+
     $fileName = ($imageName) ? $fileName : null;
 
     $sql = "INSERT INTO posts (title, description, imageName, date) VALUES (:title, :description, :imageName, :date)";
@@ -24,7 +29,7 @@ if (isset($_POST['newPost'])) {
     $db->insert($sql, $data);
 
     move_uploaded_file($imageTmp, $targetFile);
-    //$ext = $func->getFileExtension($imageName);
+
     // redirect home page
     $func->redirect();
 }
